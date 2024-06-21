@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"vs-helper/handlers"
 
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
@@ -22,9 +23,10 @@ func main() {
 
 	slog.Info("starting the bot...", slog.String("disgo.version", disgo.Version))
 
-	client, err := disgo.New(os.Getenv("BOT_TOKEN"),
+	client, err := disgo.New(os.Getenv("VIRTUALSTREETS_HELPER_TOKEN"),
 		bot.WithGatewayConfigOpts(gateway.WithIntents(gateway.IntentsNone)),
-		bot.WithCacheConfigOpts(cache.WithCaches(cache.FlagsNone)))
+		bot.WithCacheConfigOpts(cache.WithCaches(cache.FlagsNone)),
+		bot.WithEventListeners(handlers.NewHandler()))
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +37,7 @@ func main() {
 		panic(err)
 	}
 
-	slog.Info("bot is now running.")
+	slog.Info("VirtualStreets Helper is now running.")
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-s
