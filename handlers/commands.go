@@ -19,7 +19,7 @@ func NewHandler() *Handler {
 			Build())
 	})
 	h := &Handler{
-		Router: handler.New(),
+		Router: mux,
 	}
 	h.SlashCommand("/timeout", h.HandleTimeout)
 	return h
