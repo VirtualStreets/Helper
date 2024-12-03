@@ -3,7 +3,7 @@ module vs-helper
 go 1.22
 
 require (
-	github.com/disgoorg/disgo v0.18.13
+	github.com/disgoorg/disgo v0.18.14
 	github.com/disgoorg/json v1.2.0
 	github.com/lmittmann/tint v1.0.5
 )
