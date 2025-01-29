@@ -5,7 +5,7 @@ go 1.22
 require (
 	github.com/disgoorg/disgo v0.18.14
 	github.com/disgoorg/json v1.2.0
-	github.com/lmittmann/tint v1.0.6
+	github.com/lmittmann/tint v1.0.7
 )
 
 require (
