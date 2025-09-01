@@ -11,8 +11,13 @@ import (
 	"github.com/disgoorg/disgo"
 	"github.com/disgoorg/disgo/bot"
 	"github.com/disgoorg/disgo/cache"
+	"github.com/disgoorg/disgo/events"
 	"github.com/disgoorg/disgo/gateway"
 	"github.com/lmittmann/tint"
+)
+
+const (
+	newsChannelID = 838000668363063347
 )
 
 func main() {
@@ -24,9 +29,18 @@ func main() {
 	slog.Info("starting the bot...", slog.String("disgo.version", disgo.Version))
 
 	client, err := disgo.New(os.Getenv("VIRTUALSTREETS_HELPER_TOKEN"),
-		bot.WithGatewayConfigOpts(gateway.WithIntents(gateway.IntentsNone)),
+		bot.WithGatewayConfigOpts(gateway.WithIntents(gateway.IntentGuildMessages)),
 		bot.WithCacheConfigOpts(cache.WithCaches(cache.FlagsNone)),
-		bot.WithEventListeners(handlers.NewHandler()))
+		bot.WithEventListeners(handlers.NewHandler(), &events.ListenerAdapter{
+			OnGuildMessageCreate: func(event *events.GuildMessageCreate) {
+				if event.ChannelID != newsChannelID {
+					return
+				}
+				if _, err := event.Client().Rest().CrosspostMessage(newsChannelID, event.MessageID); err != nil {
+					slog.Error("failed to crosspost news message", tint.Err(err))
+				}
+			},
+		}))
 	if err != nil {
 		panic(err)
 	}
